@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Painel Admin — Tarot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:#0d0303;color:#f0e6d3;min-height:100vh;}
+.header{background:#1a0808;border-bottom:0.5px solid #3a1a1a;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;}
+.header h1{font-size:18px;font-weight:500;color:#e8c4a0;}
+.header a{font-size:13px;color:#7a4a3a;text-decoration:none;}
+.header a:hover{color:#c0392b;}
+.wrap{max-width:960px;margin:0 auto;padding:1.5rem;}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem;}
+.stat{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:10px;padding:1rem;text-align:center;}
+.stat-num{font-size:28px;font-weight:500;color:#c0392b;}
+.stat-lbl{font-size:11px;color:#7a4a3a;letter-spacing:.06em;text-transform:uppercase;margin-top:4px;}
+
+/* Filtros */
+.filters{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;}
+.filter-btn{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:7px;padding:6px 14px;font-size:12px;color:#e8c4a0;cursor:pointer;font-family:'Jost',sans-serif;}
+.filter-btn:hover,.filter-btn.ativo{border-color:#c0392b;background:#1f0a0a;color:#e87070;}
+
+/* Tabela */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead tr{border-bottom:0.5px solid #3a1a1a;}
+th{padding:10px 12px;text-align:left;color:#7a4a3a;font-weight:400;letter-spacing:.06em;text-transform:uppercase;font-size:10px;}
+td{padding:12px;border-bottom:0.5px solid #1f0808;vertical-align:middle;}
+tr:hover td{background:#120404;}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;}
+.badge-pendente{background:#2a1a00;color:#d4a030;border:0.5px solid #5a3a00;}
+.badge-confirmado{background:#001a0a;color:#30c060;border:0.5px solid #005a20;}
+.badge-cancelado{background:#1a0000;color:#c03030;border:0.5px solid #5a0000;}
+
+/* Ações */
+.actions{display:flex;gap:6px;align-items:center;}
+form{display:inline;}
+.btn-sm{background:transparent;border:0.5px solid #3a1a1a;border-radius:6px;padding:5px 11px;font-size:12px;color:#e8c4a0;cursor:pointer;font-family:'Jost',sans-serif;}
+.btn-sm:hover{border-color:#c0392b;color:#e87070;}
+.btn-del{color:#7a3a3a;}
+.btn-del:hover{border-color:#8b1a1a;color:#c03030;}
+
+.empty{text-align:center;padding:3rem;color:#5a3a3a;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🌹 Painel de agendamentos</h1>
+  <a href="/">Ver site público</a>
+</div>
+
+<div class="wrap">
+  <!-- Stats -->
+  {% set total = agendamentos|length %}
+  {% set pendentes = agendamentos|selectattr('status','equalto','pendente')|list|length %}
+  {% set confirmados = agendamentos|selectattr('status','equalto','confirmado')|list|length %}
+  {% set cancelados = agendamentos|selectattr('status','equalto','cancelado')|list|length %}
+  <div class="stats">
+    <div class="stat"><div class="stat-num">{{total}}</div><div class="stat-lbl">Total</div></div>
+    <div class="stat"><div class="stat-num" style="color:#d4a030">{{pendentes}}</div><div class="stat-lbl">Pendentes</div></div>
+    <div class="stat"><div class="stat-num" style="color:#30c060">{{confirmados}}</div><div class="stat-lbl">Confirmados</div></div>
+    <div class="stat"><div class="stat-num" style="color:#c03030">{{cancelados}}</div><div class="stat-lbl">Cancelados</div></div>
+  </div>
+
+  <!-- Tabela -->
+  {% if agendamentos %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>Serviço</th>
+          <th>Data</th>
+          <th>Horário</th>
+          <th>Preço</th>
+          <th>Pagamento</th>
+          <th>WhatsApp</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ag in agendamentos %}
+        <tr>
+          <td style="color:#5a3a3a">{{ag.id}}</td>
+          <td>
+            <div style="font-weight:500;color:#e8c4a0">{{ag.nome}}</div>
+            <div style="font-size:11px;color:#7a4a3a">{{ag.email}}</div>
+          </td>
+          <td>{{ag.servico}}</td>
+          <td>{{ag.data}}</td>
+          <td>{{ag.horario}}</td>
+          <td style="color:#c0392b;font-weight:500">{{ag.preco}}</td>
+          <td>{{ag.pagamento}}</td>
+          <td>
+            {% if ag.whatsapp %}
+            <a href="https://wa.me/55{{ag.whatsapp|replace(' ','')|replace('-','')}}" target="_blank" style="color:#25d366;text-decoration:none;">{{ag.whatsapp}}</a>
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            <span class="badge badge-{{ag.status}}">{{ag.status}}</span>
+          </td>
+          <td>
+            <div class="actions">
+              {% if ag.status == 'pendente' %}
+              <form action="/admin/agendamento/{{ag.id}}/status" method="post">
+                <input type="hidden" name="status" value="confirmado">
+                <button class="btn-sm" type="submit">Confirmar</button>
+              </form>
+              {% endif %}
+              {% if ag.status != 'cancelado' %}
+              <form action="/admin/agendamento/{{ag.id}}/status" method="post">
+                <input type="hidden" name="status" value="cancelado">
+                <button class="btn-sm btn-del" type="submit">Cancelar</button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">Nenhum agendamento ainda. 🔮</div>
+  {% endif %}
+</div>
+</body>
+</html>

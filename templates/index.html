@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agende sua consulta de Tarot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,600&family=Jost:wght@300;400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:#0d0303;color:#f0e6d3;min-height:100vh;}
+a{color:#c0392b;}
+
+.wrap{max-width:680px;margin:0 auto;padding:0 1.25rem 3rem;}
+
+/* Hero */
+.hero{text-align:center;padding:2.5rem 1rem 2rem;border-bottom:0.5px solid #3a1a1a;}
+.hero-icon{font-size:28px;letter-spacing:10px;color:#5a1a1a;margin-bottom:1rem;}
+.cigana-svg{width:100px;height:100px;margin:0 auto 1rem;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:32px;color:#e8c4a0;font-weight:400;margin-bottom:6px;}
+.hero p{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#7a4a3a;}
+
+/* Seções */
+.section{padding:1.5rem 0 0;}
+.section-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#7a4a3a;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:0.5px;background:#3a1a1a;}
+
+/* Serviços */
+.svcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+.svc-card{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:10px;padding:14px 12px;cursor:pointer;transition:border-color .15s,background .15s;}
+.svc-card:hover{border-color:#8b1a1a;}
+.svc-card.sel{border:1.5px solid #c0392b;background:#1f0a0a;}
+.svc-icon{font-size:20px;margin-bottom:6px;}
+.svc-name{font-size:13px;font-weight:500;color:#e8c4a0;margin-bottom:3px;line-height:1.3;}
+.svc-dur{font-size:11px;color:#7a4a3a;margin-bottom:8px;}
+.svc-price{font-size:18px;font-weight:500;color:#c0392b;}
+.svc-badge{display:inline-block;font-size:10px;background:#2a0808;color:#e87070;border:0.5px solid #5a1a1a;border-radius:4px;padding:2px 7px;margin-top:5px;}
+
+/* Dias */
+.days-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.day-btn{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:8px;padding:10px 14px;cursor:pointer;text-align:center;flex-shrink:0;color:#f0e6d3;font-family:'Jost',sans-serif;}
+.day-btn:hover{border-color:#8b1a1a;}
+.day-btn.sel{border:1.5px solid #c0392b;background:#1f0a0a;}
+.day-wknd{border-color:#5a2a2a;}
+.day-name{font-size:10px;color:#7a4a3a;letter-spacing:.06em;text-transform:uppercase;}
+.day-num{font-size:20px;font-weight:500;color:#e8c4a0;}
+.day-tag{font-size:9px;color:#5a3a3a;margin-top:2px;}
+
+/* Slots */
+.slots{display:flex;flex-wrap:wrap;gap:8px;}
+.slot{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:7px;padding:7px 16px;font-size:13px;cursor:pointer;color:#e8c4a0;font-family:'Jost',sans-serif;transition:border-color .12s;}
+.slot:hover{border-color:#c0392b;}
+.slot.sel{border:1.5px solid #c0392b;background:#1f0a0a;color:#e87070;}
+.slot.busy{opacity:.3;cursor:not-allowed;text-decoration:line-through;}
+.slots-hint{font-size:13px;color:#5a3a3a;font-style:italic;}
+
+/* Form */
+.form-grid{display:grid;gap:10px;}
+.form-grid input,.form-grid select{width:100%;padding:11px 14px;background:#1a0808;border:0.5px solid #3a1a1a;border-radius:8px;color:#f0e6d3;font-size:14px;font-family:'Jost',sans-serif;}
+.form-grid input:focus,.form-grid select:focus{outline:none;border-color:#c0392b;}
+.form-grid select option{background:#1a0808;}
+
+/* Pagamento */
+.pay-row{display:flex;gap:8px;flex-wrap:wrap;}
+.pay-btn{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;color:#e8c4a0;font-family:'Jost',sans-serif;display:flex;align-items:center;gap:6px;transition:border-color .12s;}
+.pay-btn:hover{border-color:#8b1a1a;}
+.pay-btn.sel{border:1.5px solid #c0392b;background:#1f0a0a;}
+
+/* Resumo */
+.summary{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:10px;padding:1rem 1.25rem;margin-top:1.25rem;}
+.sum-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;color:#7a4a3a;}
+.sum-row strong{color:#e8c4a0;}
+.sum-total{border-top:0.5px solid #3a1a1a;margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;font-size:16px;font-weight:500;}
+.sum-total span:last-child{color:#c0392b;}
+
+/* Botão */
+.btn-confirm{display:block;width:100%;padding:14px;background:#8b1a1a;color:#f0e6d3;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Jost',sans-serif;margin-top:1.25rem;letter-spacing:.04em;transition:background .15s;}
+.btn-confirm:hover{background:#c0392b;}
+.btn-confirm:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Mensagem de erro */
+.msg-erro{background:#2a0808;border:0.5px solid #8b1a1a;border-radius:8px;padding:10px 14px;font-size:13px;color:#e87070;margin-top:10px;display:none;}
+
+/* Sucesso */
+.success{text-align:center;padding:2.5rem 1rem;display:none;}
+.success h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-style:italic;color:#e8c4a0;margin:12px 0 8px;}
+.success p{font-size:14px;color:#7a4a3a;line-height:1.7;}
+
+.rose-footer{text-align:center;padding:1.5rem 0 0;font-size:14px;letter-spacing:8px;color:#3a1a1a;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-icon">🌹 🌹 🌹</div>
+    <!-- Cigana SVG -->
+    <svg class="cigana-svg" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="45" cy="28" rx="11" ry="13" fill="#e8c4a0"/>
+      <rect x="37" y="36" width="16" height="14" rx="4" fill="#1a0505"/>
+      <path d="M33 50 Q20 68 15 82 Q30 76 45 80 Q60 76 75 82 Q70 68 57 50 Z" fill="#c0392b"/>
+      <path d="M33 50 Q25 60 22 70 Q30 67 38 70 Q40 60 38 52 Z" fill="#e74c3c"/>
+      <path d="M57 50 Q65 60 68 70 Q60 67 52 70 Q50 60 52 52 Z" fill="#e74c3c"/>
+      <path d="M38 52 Q45 56 52 52 Q50 65 45 68 Q40 65 38 52 Z" fill="#ff6b6b"/>
+      <circle cx="24" cy="65" r="3" fill="#f39c12"/>
+      <circle cx="66" cy="65" r="3" fill="#f39c12"/>
+      <circle cx="35" cy="74" r="2.5" fill="#27ae60"/>
+      <circle cx="55" cy="74" r="2.5" fill="#27ae60"/>
+      <circle cx="45" cy="78" r="2.5" fill="#9b59b6"/>
+      <circle cx="29" cy="55" r="2" fill="#f1c40f"/>
+      <circle cx="61" cy="55" r="2" fill="#f1c40f"/>
+      <line x1="34" y1="36" x2="28" y2="50" stroke="#e8c4a0" stroke-width="5" stroke-linecap="round"/>
+      <line x1="56" y1="36" x2="62" y2="50" stroke="#e8c4a0" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="45" cy="22" rx="8" ry="9" fill="#d4a070"/>
+      <path d="M37 18 Q40 10 45 14 Q50 8 53 18" fill="#1a0505"/>
+      <circle cx="41" cy="22" r="1.2" fill="#3a1a1a"/>
+      <circle cx="49" cy="22" r="1.2" fill="#3a1a1a"/>
+      <path d="M42 26 Q45 28 48 26" fill="none" stroke="#c0392b" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="27" cy="48" r="4" fill="#f1c40f" stroke="#d4ac0d" stroke-width="0.5"/>
+      <circle cx="63" cy="48" r="4" fill="#f1c40f" stroke="#d4ac0d" stroke-width="0.5"/>
+    </svg>
+    <h1>Agende sua consulta</h1>
+    <p>Tarot cigano &bull; Leitura espiritual</p>
+  </div>
+
+  <!-- 1. Serviço -->
+  <div class="section">
+    <p class="section-label">1. Escolha a leitura</p>
+    <div class="svcs" id="svcs">
+      <div class="svc-card sel" data-nome="Perguntas individuais" data-preco="R$ 20" onclick="selSvc(this)">
+        <div class="svc-icon">🃏</div>
+        <p class="svc-name">Perguntas individuais</p>
+        <p class="svc-dur">10–15 min por pergunta</p>
+        <p class="svc-price">R$ 20</p>
+      </div>
+      <div class="svc-card" data-nome="Tarot completo — vídeo" data-preco="R$ 80" onclick="selSvc(this)">
+        <div class="svc-icon">📹</div>
+        <p class="svc-name">Tarot completo — vídeo</p>
+        <p class="svc-dur">60 min</p>
+        <p class="svc-price">R$ 80</p>
+      </div>
+      <div class="svc-card" data-nome="Tarot completo — WhatsApp" data-preco="R$ 70" onclick="selSvc(this)">
+        <div class="svc-icon">💬</div>
+        <p class="svc-name">Tarot completo — WhatsApp</p>
+        <p class="svc-dur">70 min</p>
+        <p class="svc-price">R$ 70</p>
+      </div>
+      <div class="svc-card" data-nome="Mesa do amor" data-preco="R$ 60" onclick="selSvc(this)">
+        <div class="svc-icon">🌹</div>
+        <p class="svc-name">Mesa do amor</p>
+        <p class="svc-dur">30 min</p>
+        <p class="svc-price">R$ 60</p>
+      </div>
+      <div class="svc-card" data-nome="Tarot premium anual" data-preco="R$ 700" onclick="selSvc(this)">
+        <div class="svc-icon">✨</div>
+        <p class="svc-name">Tarot premium anual</p>
+        <p class="svc-dur">60 min/mês · 12 sessões</p>
+        <p class="svc-price">R$ 700</p>
+        <span class="svc-badge">1x ao mês</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Data -->
+  <div class="section">
+    <p class="section-label">2. Escolha a data</p>
+    <div class="days-row" id="days"></div>
+  </div>
+
+  <!-- 3. Horário -->
+  <div class="section">
+    <p class="section-label">3. Horário disponível</p>
+    <div class="slots" id="slots">
+      <span class="slots-hint">Selecione uma data primeiro</span>
+    </div>
+  </div>
+
+  <!-- 4. Dados -->
+  <div class="section">
+    <p class="section-label">4. Seus dados</p>
+    <div class="form-grid">
+      <input type="text"  id="nome"     placeholder="Nome completo" required />
+      
+      <input type="tel"   id="whatsapp" placeholder="WhatsApp (ex: 11 91234-5678)" />
+    </div>
+  </div>
+
+  <!-- 5. Pagamento -->
+  <div class="section">
+    <p class="section-label">5. Forma de pagamento</p>
+    <div class="pay-row">
+      <div class="pay-btn sel" data-pay="Pix" onclick="selPay(this)">💠 Pix</div>
+      <div class="pay-btn" data-pay="Cartão de débito" onclick="selPay(this)">💳 Débito</div>
+      <div class="pay-btn" data-pay="Cartão de crédito" onclick="selPay(this)">💳 Crédito</div>
+    </div>
+  </div>
+
+  <!-- Resumo + botão -->
+  <div class="section" id="form-area">
+    <div class="summary">
+      <div class="sum-row"><span>Serviço</span><strong id="s-svc">Perguntas individuais</strong></div>
+      <div class="sum-row"><span>Data</span><strong id="s-date">—</strong></div>
+      <div class="sum-row"><span>Horário</span><strong id="s-time">—</strong></div>
+      <div class="sum-row"><span>Pagamento</span><strong id="s-pay">Pix</strong></div>
+      <div class="sum-total"><span>Total</span><span id="s-total">R$ 20</span></div>
+    </div>
+    <div class="msg-erro" id="msg-erro"></div>
+    <button class="btn-confirm" id="btn-confirm" onclick="confirmar()">Confirmar agendamento</button>
+  </div>
+
+  <!-- Sucesso -->
+  <div class="success" id="success">
+    <div style="font-size:40px">🌹</div>
+    <h2>As cartas receberam seu pedido!</h2>
+    <p>Você receberá a confirmação por e-mail e WhatsApp em breve.<br>Que a cigana ilumine seu caminho. 🔮</p>
+    <button class="btn-confirm" style="margin-top:1.5rem" onclick="resetForm()">Fazer outro agendamento</button>
+  </div>
+
+  <div class="rose-footer">🌹 🌹 🌹</div>
+</div>
+
+<script>
+var WK=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+var MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+var state={svc:{nome:'Perguntas individuais',preco:'R$ 20'},day:null,dayStr:null,slot:null,pay:'Pix'};
+
+function buildDays(){
+  var c=document.getElementById('days');c.innerHTML='';
+  var t=new Date();
+  for(var i=1;i<=10;i++){
+    var d=new Date(t);d.setDate(t.getDate()+i);
+    var wd=d.getDay();var wknd=(wd===0||wd===6);
+    var el=document.createElement('div');
+    el.className='day-btn'+(wknd?' day-wknd':'');
+    el.dataset.date=d.toISOString().split('T')[0];
+    el.innerHTML='<div class="day-name">'+WK[wd]+'</div><div class="day-num">'+d.getDate()+'</div><div class="day-tag">'+(wknd?'todos horários':'17h')+'</div>';
+    el.onclick=(function(dd,e){return function(){selDay(dd,e);};})(d,el);
+    c.appendChild(el);
+  }
+}
+
+function selDay(d,el){
+  state.day=d;
+  state.dayStr=d.toISOString().split('T')[0];
+  state.slot=null;
+  document.querySelectorAll('.day-btn').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('s-date').textContent=d.getDate()+' de '+MO[d.getMonth()];
+  document.getElementById('s-time').textContent='—';
+  fetchSlots(state.dayStr);
+}
+
+function fetchSlots(dataStr){
+  var c=document.getElementById('slots');
+  c.innerHTML='<span class="slots-hint">Carregando...</span>';
+  fetch('/api/horarios-disponiveis?data='+dataStr)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      c.innerHTML='';
+      if(!data.horarios||data.horarios.length===0){
+        c.innerHTML='<span class="slots-hint">Sem horários disponíveis neste dia.</span>';
+        return;
+      }
+      data.horarios.forEach(function(h){
+        var el=document.createElement('div');
+        el.className='slot';el.textContent=h;
+        el.onclick=function(){selSlot(el,h);};
+        c.appendChild(el);
+      });
+    })
+    .catch(function(){c.innerHTML='<span class="slots-hint">Erro ao carregar horários.</span>';});
+}
+
+function selSlot(el,h){
+  state.slot=h;
+  document.querySelectorAll('.slot').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('s-time').textContent=h;
+}
+
+function selSvc(el){
+  state.svc={nome:el.dataset.nome,preco:el.dataset.preco};
+  document.querySelectorAll('.svc-card').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('s-svc').textContent=state.svc.nome;
+  document.getElementById('s-total').textContent=state.svc.preco;
+}
+
+function selPay(el){
+  state.pay=el.dataset.pay;
+  document.querySelectorAll('.pay-btn').forEach(function(e){e.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('s-pay').textContent=state.pay;
+}
+
+function mostrarErro(msg){
+  var el=document.getElementById('msg-erro');
+  el.textContent=msg;el.style.display='block';
+  setTimeout(function(){el.style.display='none';},4000);
+}
+
+function confirmar(){
+  if(!state.day||!state.slot){mostrarErro('Escolha data e horário para continuar.');return;}
+  var nome=document.getElementById('nome').value.trim();
+  
+  var zap=document.getElementById('whatsapp').value.trim();
+  if(!nome){mostrarErro('Preencha nome e e-mail.');return;}
+
+  var btn=document.getElementById('btn-confirm');
+  btn.disabled=true;btn.textContent='Aguarde...';
+
+  fetch('/api/agendar',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({nome:nome,whatsapp:zap,servico:state.svc.nome,
+      preco:state.svc.preco,data:state.dayStr,horario:state.slot,pagamento:state.pay})
+  })
+  .then(function(r){
+    if(r.status===409){throw new Error('Este horário acabou de ser ocupado. Escolha outro.');}
+    if(!r.ok){throw new Error('Erro ao realizar agendamento. Tente novamente.');}
+    return r.json();
+  })
+  .then(function(){
+    document.getElementById('form-area').style.display='none';
+    document.getElementById('success').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  })
+  .catch(function(e){
+    mostrarErro(e.message);
+    btn.disabled=false;btn.textContent='Confirmar agendamento';
+  });
+}
+
+function resetForm(){
+  document.getElementById('form-area').style.display='block';
+  document.getElementById('success').style.display='none';
+  document.getElementById('nome').value='';
+  document.getElementById('email').value='';
+  document.getElementById('whatsapp').value='';
+  document.getElementById('btn-confirm').disabled=false;
+  document.getElementById('btn-confirm').textContent='Confirmar agendamento';
+  state={svc:{nome:'Perguntas individuais',preco:'R$ 20'},day:null,dayStr:null,slot:null,pay:'Pix'};
+  buildDays();
+  document.getElementById('slots').innerHTML='<span class="slots-hint">Selecione uma data primeiro</span>';
+}
+
+buildDays();
+</script>
+</body>
+</html>

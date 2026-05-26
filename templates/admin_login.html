@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin — Tarot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400&family=Jost:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:#0d0303;color:#f0e6d3;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.card{background:#1a0808;border:0.5px solid #3a1a1a;border-radius:14px;padding:2rem 2rem;width:100%;max-width:360px;}
+h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:26px;color:#e8c4a0;font-weight:400;text-align:center;margin-bottom:4px;}
+p{font-size:12px;color:#7a4a3a;text-align:center;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.5rem;}
+input[type=password]{width:100%;padding:11px 14px;background:#0d0303;border:0.5px solid #3a1a1a;border-radius:8px;color:#f0e6d3;font-size:14px;font-family:'Jost',sans-serif;margin-bottom:12px;}
+input[type=password]:focus{outline:none;border-color:#c0392b;}
+button{width:100%;padding:12px;background:#8b1a1a;color:#f0e6d3;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Jost',sans-serif;}
+button:hover{background:#c0392b;}
+.erro{background:#2a0808;border:0.5px solid #8b1a1a;border-radius:8px;padding:9px 14px;font-size:13px;color:#e87070;margin-bottom:12px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🌹 Admin</h1>
+  <p>Painel da tarologa</p>
+  {% if erro %}<div class="erro">{{erro}}</div>{% endif %}
+  <form method="post" action="/admin/login">
+    <input type="password" name="senha" placeholder="Senha" autofocus />
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+</body>
+</html>
